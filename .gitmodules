@@ -1,0 +1,3 @@
+[submodule "NetworkLayer"]
+	path = NetworkLayer
+	url = git@github.com:irinagorbachenko/NetworkLayer.git
