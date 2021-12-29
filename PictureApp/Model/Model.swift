@@ -4,7 +4,6 @@
 //
 //  Created by Irina Gorbachenko on 02.12.2021.
 //
-
 import UIKit
 
 struct Hits: Codable {
@@ -40,8 +39,8 @@ struct Post: Codable, Equatable {
     }
     
 }
-struct Category {
-    
+
+ struct Category {
     let name: String
     let isComplete: Bool
       

@@ -4,11 +4,9 @@
 //
 //  Created by Irina Gorbachenko on 26.11.2021.
 //
-
 import UIKit
 
 class GalleryCollectionViewCell: UICollectionViewCell {
-    
     static let identifier = "GalleryCollectionViewCell"
     
     public let imageView : UIImageView = {
@@ -18,7 +16,6 @@ class GalleryCollectionViewCell: UICollectionViewCell {
         imageView.layer.cornerRadius = 12
        
         return imageView
-        
     }()
     
     public let tagsLabel :UILabel = {
@@ -29,7 +26,6 @@ class GalleryCollectionViewCell: UICollectionViewCell {
     }()
     
     override init(frame: CGRect) {
-        
         super.init(frame: frame)
         contentView.addSubview(imageView)
         contentView.addSubview(tagsLabel)
@@ -40,12 +36,10 @@ class GalleryCollectionViewCell: UICollectionViewCell {
         imageView.topAnchor.constraint(equalTo: topAnchor).isActive = true
         imageView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
         
-                
         tagsLabel.translatesAutoresizingMaskIntoConstraints = false
         tagsLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
         tagsLabel.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         tagsLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor).isActive = true
-                
     }
     
     required init?(coder: NSCoder) {
@@ -55,13 +49,6 @@ class GalleryCollectionViewCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         imageView.frame = contentView.bounds
-       
     }
     
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        
-    }
-    
-   
 }

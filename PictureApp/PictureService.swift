@@ -4,16 +4,13 @@
 //
 //  Created by Irina Gorbachenko on 01.12.2021.
 //
-
 import UIKit
 import NetworkLayer
 
-
 public struct PictureService {
-
     let session: HTTPClient
 
-   public init(with session: HTTPClient) {
+    public init(with session: HTTPClient) {
         self.session = session
     }
 
@@ -30,8 +27,6 @@ public struct PictureService {
             "category": selectedCategory.joined(separator: ",")
         ].map({ URLQueryItem(name: $0, value: "\($1)")})
         
-
-        
         session.get(from: urlComponents.url!) { (result) in
             switch result {
             case let .success(data, response):
@@ -41,8 +36,6 @@ public struct PictureService {
                 break
             }
         }
-     
-        
     }
 
 }
