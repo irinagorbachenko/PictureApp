@@ -40,17 +40,6 @@ struct Post: Codable, Equatable {
     
 }
 
- struct Category {
-    let name: String
-    let isComplete: Bool
-      
-   init(name: String, isComplete: Bool = false) {
-     self.name = name
-     self.isComplete = isComplete
-      }
-      
-    func completeToggled() -> Category {
-        return Category(name: name, isComplete: !isComplete)
-      }
-    
+enum Category: String, CaseIterable, Equatable {
+    case music, nature, science, backgrounds, fashion, education, feelings, health, people, religion, places, animals, industry, computer, food, sports, travel, buildings, business
 }

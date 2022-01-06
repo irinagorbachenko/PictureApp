@@ -10,44 +10,36 @@ import NetworkLayer
 class PicturesViewController: UIViewController, OptionsViewControllerDelegate, FilterViewControllerDelegate {
     var totalHits = 0
     var currentPage = 1
-    var selectedCategoryForSort = [String]()
+    var selectedCategoryForSort = [Category]()
     var orderForCategories : Order = .popular
     var collectionViewFlowLayout : UICollectionViewFlowLayout!
     private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
     var hits = [Post](){
-        didSet{
-            DispatchQueue.main.async{
+        didSet {
+            DispatchQueue.main.async {
                 self.collectionView.reloadData()
             }
         }
     }
     
     // MARK:Delegate for categories
-    func filterViewController(_ controller: FilterViewController, didSelectCategory selectedCategory: [String]) {
-         currentPage = 1
-         hits.removeAll()
-         fetchHits(order: orderForCategories, selectedCategory: selectedCategory,currentPage: currentPage)
-          DispatchQueue.main.async{
-            self.collectionView.reloadData()
-        }
+    func filterViewController(didSelectCategory selectedCategory: [Category]) {
+        resetPageAndHitsArray()
+        fetchHits(order: orderForCategories, selectedCategory: selectedCategory,currentPage: currentPage)
         selectedCategoryForSort = selectedCategory
         navigationController?.popViewController(animated: true)
     }
     
     //MARK:Delegate for order
-    func optionsViewController(_ controller: OptionsViewController, didSelectOrderStrategy order: Order) {
-        currentPage = 1
-        hits.removeAll()
+    func optionsViewController( didSelectOrderStrategy order: Order) {
+        resetPageAndHitsArray()
         fetchHits(order: order , selectedCategory: selectedCategoryForSort,currentPage: currentPage)
-          DispatchQueue.main.async{
-            self.collectionView.reloadData()
-        }
         orderForCategories = order
         navigationController?.popViewController(animated: true)
     }
-   
-    func fetchHits(order: Order , selectedCategory: [String], currentPage: Int) {
+    
+    func fetchHits(order: Order , selectedCategory: [Category], currentPage: Int) {
         PictureService(with: URLHTTPClient(session: URLSession.shared))
             .fetch(completion: { post , totalHits in
                 self.hits.append(contentsOf: post)
@@ -73,6 +65,7 @@ class PicturesViewController: UIViewController, OptionsViewControllerDelegate, F
         let filterVc = self.storyboard?.instantiateViewController(withIdentifier: "FilterViewController")  as! FilterViewController
         filterVc.delegate = self
         filterVc.title = "Select a Category"
+        filterVc.selectedCategory = selectedCategoryForSort
         navigationController?.pushViewController(filterVc, animated: true)
     }
     
@@ -96,10 +89,14 @@ class PicturesViewController: UIViewController, OptionsViewControllerDelegate, F
         buttonOptions.addTarget(self, action: #selector(showOptions(_:)), for: .touchUpInside)
         navigationItem.rightBarButtonItem = .init(customView: buttonOptions)
         setupCollectionView()
-        fetchHits(order: orderForCategories,selectedCategory: ["music"],currentPage: currentPage)
+        fetchHits(order: orderForCategories,selectedCategory: [.music],currentPage: currentPage)
+    }
+    func resetPageAndHitsArray(){
+        currentPage = 1
+        hits.removeAll()
     }
 }
-    
+
 extension PicturesViewController : UICollectionViewDelegate,UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -123,7 +120,7 @@ extension PicturesViewController : UICollectionViewDelegate,UICollectionViewData
     
     //MARK:Pagination
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if hits.count - 1 < totalHits && indexPath.row == hits.count - 1 {
+        if hits.count < totalHits && indexPath.row == hits.count - 1 {
             currentPage = currentPage + 1
             fetchHits(order: orderForCategories, selectedCategory: selectedCategoryForSort, currentPage: currentPage)
         }
@@ -144,34 +141,34 @@ extension PicturesViewController : UICollectionViewDelegateFlowLayout{
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if UIDevice.current.orientation.isLandscape {
-        landscapeCollectionViewLayout()
-          } else {
-        portraitCollectionViewLayout()
+            landscapeCollectionViewLayout()
+        } else {
+            portraitCollectionViewLayout()
         }
     }
-
+    
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         self.dismiss(animated: false, completion: nil)
-            switch UIDevice.current.orientation {
-                    case .landscapeLeft, .landscapeRight:
-                coordinator.animate (alongsideTransition: { (_) in
-                    self.landscapeCollectionViewLayout()
-                }, completion: nil )
-                    case .portrait, .portraitUpsideDown:
-                coordinator.animate (alongsideTransition: { (_) in
-                    self.portraitCollectionViewLayout()
-                }, completion: nil )
-                    default:
-                        print("error")
-                    }
-            super.viewWillTransition(to: size, with: coordinator)
+        switch UIDevice.current.orientation {
+        case .landscapeLeft, .landscapeRight:
+            coordinator.animate (alongsideTransition: { (_) in
+                self.landscapeCollectionViewLayout()
+            }, completion: nil )
+        case .portrait, .portraitUpsideDown:
+            coordinator.animate (alongsideTransition: { (_) in
+                self.portraitCollectionViewLayout()
+            }, completion: nil )
+        default:
+            print("error")
         }
-  
+        super.viewWillTransition(to: size, with: coordinator)
+    }
+    
     func setupCollectionViewLayout(){
         collectionViewFlowLayout = UICollectionViewFlowLayout()
         collectionView.setCollectionViewLayout(collectionViewFlowLayout, animated: true)
         portraitCollectionViewLayout()
-        }
+    }
     
     func portraitCollectionViewLayout(){
         let numberOfItemsPerRow: CGFloat = 1
@@ -185,21 +182,21 @@ extension PicturesViewController : UICollectionViewDelegateFlowLayout{
         collectionViewFlowLayout.scrollDirection = .vertical
         collectionViewFlowLayout.minimumLineSpacing = lineSpacing
         collectionViewFlowLayout.minimumInteritemSpacing = interItemSpacing
-        }
+    }
     
     func landscapeCollectionViewLayout(){
-       let numberOfItemsPerRow : CGFloat = 2
-       let lineSpacing: CGFloat = 50
-       let interItemSpacing: CGFloat = 10
-       let width = ( collectionView.frame.width - CGFloat((numberOfItemsPerRow - 1)) * interItemSpacing) / numberOfItemsPerRow
-       let height = width
-       collectionViewFlowLayout .sectionInsetReference = .fromSafeArea
-       collectionViewFlowLayout.itemSize = CGSize (width: width, height: height)
-       collectionViewFlowLayout.sectionInset = UIEdgeInsets.zero
-       collectionViewFlowLayout.scrollDirection = .vertical
-       collectionViewFlowLayout.minimumLineSpacing = lineSpacing
-       collectionViewFlowLayout.minimumInteritemSpacing = interItemSpacing
-        }
+        let numberOfItemsPerRow : CGFloat = 2
+        let lineSpacing: CGFloat = 50
+        let interItemSpacing: CGFloat = 10
+        let width = ( collectionView.frame.width - CGFloat((numberOfItemsPerRow - 1)) * interItemSpacing) / numberOfItemsPerRow
+        let height = width
+        collectionViewFlowLayout .sectionInsetReference = .fromSafeArea
+        collectionViewFlowLayout.itemSize = CGSize (width: width, height: height)
+        collectionViewFlowLayout.sectionInset = UIEdgeInsets.zero
+        collectionViewFlowLayout.scrollDirection = .vertical
+        collectionViewFlowLayout.minimumLineSpacing = lineSpacing
+        collectionViewFlowLayout.minimumInteritemSpacing = interItemSpacing
+    }
 }
 
 extension UIBarButtonItem {
@@ -216,11 +213,11 @@ extension PicturesViewController: UIPopoverPresentationControllerDelegate {
     func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
         return .none
     }
-
+    
     func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
-
+        
     }
-
+    
     func popoverPresentationControllerShouldDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) -> Bool {
         return true
     }

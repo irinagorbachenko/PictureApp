@@ -9,23 +9,29 @@ import NetworkLayer
 
 public struct PictureService {
     let session: HTTPClient
-
+    
     public init(with session: HTTPClient) {
         self.session = session
     }
-
-    func fetch(completion: @escaping ([Post], Int) -> (),order : Order ,selectedCategory:[String],currentPage:Int) {
-
-        var urlComponents = URLComponents(string: "https://pixabay.com/api")!
-        urlComponents.queryItems = [
+    
+    func fetch(completion: @escaping ([Post], Int) -> (),order : Order ,selectedCategory:[Category],currentPage:Int) {
+        
+        var components = [
             "key": "8630898-e092bf16cb1dd9ff6a483dabf",
             "image_type": "photo",
             "per_page": 20,
             "safesearch": "true",
             "page": currentPage,
             "order": order,
-            "category": selectedCategory.joined(separator: ",")
-        ].map({ URLQueryItem(name: $0, value: "\($1)")})
+            //"category": selectedCategory.first?.rawValue
+        ] as [String : Any]
+        
+        if let selectedCategory = selectedCategory.first{
+            components["category"] = selectedCategory.rawValue
+        }
+        
+        var urlComponents = URLComponents(string: "https://pixabay.com/api")!
+        urlComponents.queryItems = components.map({ URLQueryItem(name: $0, value: "\($1)")})
         
         session.get(from: urlComponents.url!) { (result) in
             switch result {
@@ -37,7 +43,7 @@ public struct PictureService {
             }
         }
     }
-
+    
 }
 
 

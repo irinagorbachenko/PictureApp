@@ -8,48 +8,52 @@ import UIKit
 import NetworkLayer
 
 protocol FilterViewControllerDelegate : AnyObject {
-    func filterViewController (_ controller: FilterViewController, didSelectCategory selectedCategory:[String])
+    func filterViewController (didSelectCategory selectedCategory:[Category])
 }
 
 class FilterViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
-    var selectedCategory = [String]()
+    var selectedCategory = [Category]()
     weak var delegate: FilterViewControllerDelegate?
-    
-    var categories = [Category(name: "music"),Category(name: "nature"),Category(name: "science"),Category(name: "backgrounds"),Category(name: "fashion"),Category(name: "education"),Category(name: "feelings"),Category(name: "health"),Category(name: "people"),Category(name: "religion"),Category(name: "places"),Category(name: "animals"),Category(name: "industry"),Category(name: "computer"),Category(name: "food"),Category(name: "sports"),Category(name: "travel"),Category(name: "buildings"),Category(name: "business")]
 
+    
     @IBAction func doneCategoriesButton(_ sender: UIButton) {
-        delegate?.filterViewController(self, didSelectCategory: selectedCategory)
-      }
+        delegate?.filterViewController( didSelectCategory: selectedCategory)
+    }
 }
 
 extension FilterViewController: UITableViewDataSource {
-
-      func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categories.count
-      }
-      
-      func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return Category.allCases.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "checked cell", for: indexPath) as! CheckTableViewCell
         cell.delegate = self
-        let category = categories[indexPath.row]
-        cell.set(name: category.name, checked: category.isComplete)
+        let category = Category.allCases[indexPath.row]
+        cell.set(name: category.rawValue, checked: selectedCategory.contains(category))
         return cell
-      }
-      
+    }
+    
 }
-  
+
 extension FilterViewController: CheckTableViewCellDelegate {
     
-        func checkTableViewCell(_ cell: CheckTableViewCell, didChagneCheckedState checked: Bool) {
-            guard let indexPath = tableView.indexPath(for: cell) else {
-                  return
-                }
-            let category = categories[indexPath.row]
-            let newCategory = Category(name: category.name, isComplete: checked)
-            categories[indexPath.row] = newCategory
-            selectedCategory.append(newCategory.name)
-      }
+    func checkTableViewCell(_ cell: CheckTableViewCell, didChangeCheckedState checked: Bool) {
+        guard let indexPath = tableView.indexPath(for: cell) else {
+            return
+        }
+        let category = Category.allCases[indexPath.row]
+        if checked{
+        selectedCategory.append(category)
+        } else {
+            if let indexForDelete = selectedCategory.firstIndex(of: category){
+                selectedCategory.remove(at: indexForDelete)
+            }
+        }
+        
+    }
 }
 
 

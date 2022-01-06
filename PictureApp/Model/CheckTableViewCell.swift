@@ -7,23 +7,18 @@
 import UIKit
 
 protocol CheckTableViewCellDelegate: AnyObject {
-  func checkTableViewCell(_ cell: CheckTableViewCell, didChagneCheckedState checked: Bool)
+    func checkTableViewCell(_ cell: CheckTableViewCell, didChangeCheckedState checked: Bool)
 }
 
 class CheckTableViewCell: UITableViewCell {
-     @IBOutlet weak var checkbox: Checkbox!
-     @IBOutlet weak var label: UILabel!
-     
-     weak var delegate: CheckTableViewCellDelegate?
+    @IBOutlet weak var checkbox: Checkbox!
+    @IBOutlet weak var label: UILabel!
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
-    }
-
+    weak var delegate: CheckTableViewCellDelegate?
+    
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-  
+        
     }
     
     override  func awakeFromNib() {
@@ -46,17 +41,17 @@ class CheckTableViewCell: UITableViewCell {
     }
     
     @IBAction func checked(_ sender: Checkbox) {
-        delegate?.checkTableViewCell(self, didChagneCheckedState: checkbox.checked)
-     }
-     
-     func set(name: String, checked: Bool) {
+        delegate?.checkTableViewCell(self, didChangeCheckedState: checkbox.checked)
+    }
+    
+    func set(name: String, checked: Bool) {
         label.text = name
         set(checked: checked)
-     }
-     
-     func set(checked: Bool) {
-       checkbox.checked = checked
-      
-     }
-
+    }
+    
+    func set(checked: Bool) {
+        checkbox.checked = checked
+        
+    }
+    
 }
