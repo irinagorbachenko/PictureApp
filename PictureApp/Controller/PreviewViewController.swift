@@ -12,46 +12,37 @@ class PreviewViewController: UIViewController {
     @IBOutlet var tagsLabel: UILabel!
     
     var selectedPost: Post?
-    var tagText : String?
     
     @IBAction func sharePics(_ sender: Any) {
-        
         let image = imageViewPreview.image
         let text = tagsLabel.text
-        
         var share = [Any]()
         share.append(image)
         share.append(text)
-        
         let shareController = UIActivityViewController(activityItems: share, applicationActivities: nil)
         present(shareController, animated: true, completion: nil)
         
     }
     
-    override func viewDidLoad()
-    {
+    override func viewDidLoad() {
         super.viewDidLoad()
         guard let selectedPicture = selectedPost else {
             return
         }
-        guard let tagText = tagText else {
-            return
-        }
-        configureUI(with: selectedPicture, tagText: tagText)
+        configureUI(with: selectedPicture)
     }
     
-    func configureUI (with selectedPicture : Post ,tagText:String){
+    func configureUI (with selectedPicture: Post){
         self.selectedPost = selectedPicture
-        self.tagText =  tagText
         guard isViewLoaded else {
             return
         }
         
-        guard let url = URL(string:selectedPicture.image) else { return }
+        guard let url = URL(string: selectedPicture.image) else { return }
         ImageLoader(with: URLHTTPClient(session: URLSession.shared)).load(from: url) { (image) in
             DispatchQueue.main.async {
                 self.imageViewPreview.image = image
-                self.tagsLabel.text = tagText
+                self.tagsLabel.text = selectedPicture.tags
             }
         }
     }

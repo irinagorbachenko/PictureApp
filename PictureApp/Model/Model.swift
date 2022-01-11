@@ -10,7 +10,7 @@ struct Hits: Codable {
     let total: Int
     let totalHits: Int
     let hits: [Post]
-
+    
     var hasMore: Bool {
         total > totalHits
     }
@@ -25,8 +25,7 @@ struct Post: Codable, Equatable {
     let imageWidth: Int
     let userImageURL: String
     let tags : String
-  
-
+    
     enum CodingKeys: String, CodingKey {
         case id
         case image = "webformatURL"
@@ -37,7 +36,6 @@ struct Post: Codable, Equatable {
         case userImageURL
         case tags
     }
-    
 }
 
 enum Category: String, CaseIterable, Equatable {

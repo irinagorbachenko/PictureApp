@@ -8,30 +8,37 @@ import UIKit
 import NetworkLayer
 
 protocol OptionsViewControllerDelegate : AnyObject {
-    func optionsViewController ( didSelectOrderStrategy order: Order)
+    func optionsViewController (didSelectOrderStrategy order: Order)
     func didFilterSelected()
 }
-enum Order: String{
+
+enum Order: String {
     case popular
-    case latest 
+    case latest
 }
 
 class OptionsViewController: UIViewController {
     @IBOutlet var sortButton: UIButton!
-    var isTapped :Bool = true
     weak var delegate: PicturesViewController?
+    var order = Order.popular
+    var invertedOrder :Order {
+        switch order {
+        case .popular:
+            return .latest
+        case .latest:
+            return .popular
+        }
+    }
     
     @IBAction func sortPictures() {
-        self.dismiss (animated: true, completion: nil)
-        let order : Order?
-        if  isTapped{
-            order = Order(rawValue: "latest")
-            isTapped = false
-        } else {
-            order = Order(rawValue: "popular")
-            isTapped = true
+        switch order {
+        case .popular:
+            order = .latest
+        case .latest:
+            order = .popular
         }
-        delegate?.optionsViewController( didSelectOrderStrategy: order!)
+        delegate?.optionsViewController(didSelectOrderStrategy: order)
+        self.dismiss (animated: true, completion: nil)
     }
     
     @IBAction func filterPictures(_ sender: Any) {
@@ -39,4 +46,8 @@ class OptionsViewController: UIViewController {
         self.dismiss (animated: true, completion: nil)
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        sortButton.setTitle(invertedOrder.rawValue.capitalized, for: .normal)
+    }
 }

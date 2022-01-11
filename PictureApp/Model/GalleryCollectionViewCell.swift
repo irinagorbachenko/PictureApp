@@ -9,16 +9,15 @@ import UIKit
 class GalleryCollectionViewCell: UICollectionViewCell {
     static let identifier = "GalleryCollectionViewCell"
     
-    public let imageView : UIImageView = {
+    public let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleToFill
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 12
-        
         return imageView
     }()
     
-    public let tagsLabel :UILabel = {
+    public let tagsLabel: UILabel = {
         let tagsLabel = UILabel()
         tagsLabel.contentMode = .top
         tagsLabel.clipsToBounds = true
@@ -29,13 +28,11 @@ class GalleryCollectionViewCell: UICollectionViewCell {
         super.init(frame: frame)
         contentView.addSubview(imageView)
         contentView.addSubview(tagsLabel)
-        
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
         imageView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         imageView.topAnchor.constraint(equalTo: topAnchor).isActive = true
         imageView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-        
         tagsLabel.translatesAutoresizingMaskIntoConstraints = false
         tagsLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
         tagsLabel.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
@@ -45,10 +42,4 @@ class GalleryCollectionViewCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError()
     }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        imageView.frame = contentView.bounds
-    }
-    
 }

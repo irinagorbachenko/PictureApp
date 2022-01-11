@@ -30,9 +30,8 @@ class CheckTableViewCell: UITableViewCell {
         checkbox.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
         checkbox.widthAnchor.constraint(equalToConstant: 27).isActive = true
         checkbox.contentMode = .scaleAspectFit
-        
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.trailingAnchor.constraint(equalTo: checkbox.leadingAnchor,constant: 8).isActive = true
+        label.trailingAnchor.constraint(equalTo: checkbox.leadingAnchor, constant: 8).isActive = true
         label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8).isActive = true
         label.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
         label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
@@ -51,7 +50,5 @@ class CheckTableViewCell: UITableViewCell {
     
     func set(checked: Bool) {
         checkbox.checked = checked
-        
     }
-    
 }

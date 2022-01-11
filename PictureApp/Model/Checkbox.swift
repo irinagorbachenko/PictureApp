@@ -33,18 +33,14 @@ class Checkbox: UIControl {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(imageView)
-        
         imageView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
         imageView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
         imageView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         imageView.topAnchor.constraint(equalTo: topAnchor).isActive = true
         imageView.image = image
         imageView.contentMode = .scaleAspectFit
-        
         self.imageView = imageView
-        
         backgroundColor = UIColor.clear
-        
         addTarget(self, action: #selector(touchUpInside), for: .touchUpInside)
     }
     
